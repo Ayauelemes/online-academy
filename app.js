@@ -530,39 +530,37 @@ function changeLesson(title) {
     // Сабақ модульін жүктеу логикасы қосу керек
 }
 
-async function submitTask() {
+async function submitHomework() {
+    const urlInput = document.getElementById('homeworkUrl');
+    const homeworkUrl = urlInput ? urlInput.value : '';
     const token = localStorage.getItem('token');
-    const urlInput = document.getElementById('taskLink');
-    
-    if (!urlInput || !urlInput.value.trim()) {
+
+    if (!homeworkUrl) {
         alert("Сілтемені енгізіңіз!");
         return;
     }
 
     try {
-        const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-task', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-homework', {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}` 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ 
-                homework_url: urlInput.value.trim() 
-            })
+            body: JSON.stringify({ homework_url: homeworkUrl })
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-            alert("✅ Тапсырма жіберілді!");
-            urlInput.value = '';
-            document.querySelector('.submission-form').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'flex';
+            alert('✅ Тапсырма сәтті жіберілді!');
+            if(urlInput) urlInput.value = ''; // Форманы тазалау
         } else {
-            const error = await response.json();
-            alert("Қате: " + error.error);
+            alert('Қате: ' + (data.error || 'Белгісіз қате'));
         }
     } catch (err) {
-        console.error(err);
-        alert("Сервер қатесі!");
+        console.error('Жіберу қатесі:', err);
+        alert('Сервермен байланыс жоқ!');
     }
 }
 
