@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оқу форматын таңдау | Online Academy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Скриншоттағыдай дизайн үшін арнайы стильдер */
+        .pricing-section { padding: 80px 0; display: flex; justify-content: center; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; max-width: 1200px; }
+        
+        .price-card {
+            background: #151515;
+            border-radius: 28px;
+            padding: 50px 35px;
+            text-align: center;
+            border: 1px solid #222;
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .price-card.featured {
+            border: 2px solid #e2f113; /* Скриншоттағы сары түс */
+            transform: scale(1.05);
+            background: #1a1a1a;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e2f113;
+            color: black;
+            padding: 6px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .price { font-size: 2.8rem; font-weight: bold; color: #e2f113; margin: 25px 0; }
+        .price span { font-size: 1rem; color: #888; }
+
+        .features { list-style: none; padding: 0; margin-bottom: 45px; text-align: left; }
+        .features li { margin-bottom: 18px; color: #ccc; font-size: 0.95rem; display: flex; align-items: center; }
+        .features li i { color: #e2f113; margin-right: 12px; font-size: 1.1rem; }
+
+        /* Батырмалар */
+        .select-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #e2f113;
+            color: black;
+        }
+
+        .select-btn.white { background: white; color: black; }
+        .select-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+        @media (max-width: 992px) {
+            .pricing-grid { grid-template-columns: 1fr; gap: 40px; }
+            .price-card.featured { transform: scale(1); }
+        }
+    </style>
+</head>
+<body style="background: #0a0a0a; color: white;">
+
+    <header>
+        <nav class="container">
+            <div class="logo"><a href="index.html">Online Academy</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Басты бет</a></li>
+                <li><a href="courses.html">Курстар</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Кіру</a>
+                <a href="register.html" class="register-btn">Тіркелу</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding: 60px 0;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Оқу форматын таңдаңыз</h1>
+            <p style="color: #888; font-size: 1.05rem;">Өзіңізге ыңғайлы форматты таңдап, білім алуды бастаңыз.</p>
+        </div>
+
+        <div class="pricing-section">
+            <div class="pricing-grid">
+                
+                <!-- Топтық оқу -->
+                <div class="price-card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Топтық оқу</h3>
+                    <div class="price">24,990 ₸ <span>/ай</span></div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> 7-8 студент</li>
+                        <li><i class="fas fa-check-circle"></i> Аптасына 5 рет сабақ</li>
+                        <li><i class="fas fa-check-circle"></i> Жалпы чат және қолдау</li>
+                    </ul>
+                    <button onclick="selectPlan('Топтық оқу', 24990)" class="select-btn">Таңдау</button>
+                </div>
+
+                <!-- Жұптық сабақ -->
+                <div class="price-card featured">
+                    <div class="popular-badge">Ең танымал</div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Жұптық сабақ</h3>
+                    <div class="price">42,990 ₸ <span>/ай</span></div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> 2 студент</li>
+                        <li><i class="fas fa-check-circle"></i> Икемді кесте</li>
+                        <li><i class="fas fa-check-circle"></i> Деңгейге сай бағдарлам��</li>
+                    </ul>
+                    <button onclick="selectPlan('Жұптық сабақ', 42990)" class="select-btn white">Таңдау</button>
+                </div>
+
+                <!-- Жеке сабақ -->
+                <div class="price-card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Жеке (Individual)</h3>
+                    <div class="price">80,000 ₸ <span>/ай</span></div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> Тек 1 студент</li>
+                        <li><i class="fas fa-check-circle"></i> Экспертпен жеке жұмыс</li>
+                        <li><i class="fas fa-check-circle"></i> Кез-келген уақытта оқу</li>
+                    </ul>
+                    <button onclick="selectPlan('Жеке сабақ', 80000)" class="select-btn">Таңдау</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Online Academy. Барлық құқықтар қорғалған.</p>
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

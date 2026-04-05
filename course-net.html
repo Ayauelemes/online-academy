@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# және .NET платформасы | Online Academy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo"><a href="index.html">Online Academy</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Басты бет</a></li>
+                <li><a href="courses.html">Курстар</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="course-detail-page container">
+        <section class="course-header">
+            <div class="course-header-info">
+                <h1>C# және .NET: <span class="highlight">Кәсіби бағдарламалау</span></h1>
+                <p>Microsoft экожүйесінің қуатты тілін меңгеріп, күрделі backend жүйелер мен интерактивті ойындар құруды үйреніңіз.</p>
+                
+                <div class="course-meta-big">
+                    <span><i class="fas fa-star"></i> 4.9 рейтинг</span>
+                    <span><i class="fas fa-clock"></i> 18 сағат</span>
+                    <span><i class="fas fa-user-graduate"></i> 480+ студент</span>
+                </div>
+
+                <button onclick="selectCourse('C# және .NET платформасы', 'images/NET.jpg')" class="btn-filled">
+                    Курсты таңдау
+                </button>
+            </div>
+            <div class="course-header-img">
+                <img src="images/NET.jpg" alt="C# and .NET" onerror="this.src='https://via.placeholder.com/500x300?text=C%23+and+.NET+Course'">
+            </div>
+        </section>
+
+        <section class="course-what-learn">
+            <h2>Бұл курста не <span class="highlight">үйренесіз?</span></h2>
+            <div class="learn-grid">
+                <div class="learn-item"><i class="fas fa-check-circle"></i> C# синтаксисі және қатаң типтеу</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> .NET Core және ASP.NET негіздері</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> LINQ және деректер қорымен жұмыс</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Unity-де қарапайым логика жазу</div>
+            </div>
+        </section>
+
+        <section class="course-curriculum">
+            <h2>Курс <span class="highlight">бағдарламасы</span></h2>
+            <div class="curriculum-list">
+                <div class="curriculum-item">
+                    <span class="module-num">01</span>
+                    <div class="module-text">
+                        <h4>C# негіздері</h4>
+                        <p>Айнымалылар, массивтер және классикалық OOP принциптері.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">02</span>
+                    <div class="module-text">
+                        <h4>Backend әлемі</h4>
+                        <p>ASP.NET-те Web API құру және серверлік логиканы жазу.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">03</span>
+                    <div class="module-text">
+                        <h4>Entity Framework</h4>
+                        <p>Деректер қорын басқару және мәліметтерді сақтау.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-bottom">
+        <p>&copy; 2026 Online Academy. Барлық құқықтар қорғалған.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

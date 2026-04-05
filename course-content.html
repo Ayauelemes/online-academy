@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Негіздері | Оқу платформасы</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="course-page">
+    <header class="course-header">
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Кабинетке қайту</a>
+        <h2 id="current-course-title">Python Негіздері</h2>
+    </header>
+
+    <div class="course-wrapper">
+        <aside class="course-sidebar">
+            <div class="module">
+                <h4>1. Python Негіздері</h4>
+                <nav class="lesson-list">
+                    <a href="#" class="lesson-item active" onclick="changeLesson(event, '1.1 Кіріспе. Python')">1.1 Кіріспе. Python</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '1.2 Айнымалылар және деректер түрлері')">1.2 Айнымалылар...</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '1.3 Операторлар')">1.3 Операторлар</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '1.4 Шартты құрылымдар')">1.4 Шартты құрылымдар</a>
+                </nav>
+            </div>
+            <div class="module">
+                <h4>2. String пен жинақтар</h4>
+                <nav class="lesson-list">
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '2.1 String')">2.1 String</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '2.2 Тізім (List)')">2.2 Жинақтар - Тізім</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '2.3 Кортеж (Tuple)')">2.3 Жинақтар - Кортеж</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '2.4 Сөздік (Dict)')">2.4 Жинақтар - Сөздік</a>
+                    <a href="#" class="lesson-item" onclick="changeLesson(event, '2.5 Жиын (Set)')">2.5 Жинақтар - Жиын</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="course-main">
+            <!-- 🎥 ВИДЕО ПЛЕЕР -->
+            <div class="video-container">
+                <video id="mainVideo" controls style="width: 100%; border-radius: 12px;">
+                    <source src="video/lesson1.mp4" type="video/mp4">
+                    Браузеріңіз видеоны қолдамайды.
+                </video>
+            </div>
+
+            <!-- 📚 ТАБЫ -->
+            <div class="lesson-tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="openTab(event, 'info')">Анықтама</button>
+                    <button class="tab-btn" onclick="openTab(event, 'task')">Тапсырма</button>
+                </div>
+
+                <!-- АНЫҚТАМА БӨЛІМі -->
+                <div id="info" class="tab-content active">
+                    <h3 id="lesson-name">1.1 Кіріспе. Python</h3>
+                    <p>Python — бұл бағдарламалау тілі, ол әртүрлі бағдарламалар, сайттар, ойындар және жасанды интеллект жүйелерін жасау үшін қолданылады. Python 1991 жылы жасалған. Python-ды Guido van Rossum ойлап тапқан. Көбінесе оны арнайы бағдарламаларда жазады, мысалы PyCharm сияқты ортада жұмыс істейді. Python арқылы адамдар веб-сайттар жасайды, деректерді талдайды, боттар құрады және әртүрлі процестерді автоматтандырады. Ол қарапайым синтаксисінің арқасында жаңадан бастаушыларға түсінікті және тез үйренуге ыңғайлы.</p>
+                </div>
+
+                <!-- ТАПСЫРМА БӨЛІМі -->
+                <div id="task" class="tab-content">
+                    <div class="task-info-box">
+                        <h3>Үй тапсырмасы</h3>
+                        <p>Тапсырма файлы мына 
+                            <a href="https://1drv.ms/w/c/4758aa6bd2273d93/IQBgiVl96P9QS68AuhWMhptcASeFNVT-MWMwbCOY8KsLTAM" 
+                               target="_blank" class="task-link">сілтеме</a> 
+                            бойынша орналасқан.<br>
+                        
+                        <div class="task-instructions" style="margin-top: 20px;">
+                            <h4>Тапсырманы жіберу</h4>
+                        </div>
+
+                        <!-- ІНПУТ ФОРМА -->
+                        <div class="submission-form">
+                            <label for="taskLink"><strong>Сіздің сілтеме:</strong></label>
+                            <input 
+                                type="url" 
+                                id="taskLink"
+                                placeholder="https://github.com/yourname/repo немесе https://drive.google.com/file/..." 
+                                required
+                                style="margin-bottom: 12px;">
+                            
+                            <button onclick="submitTask()" class="btn-filled" style="width: 100%; padding: 12px;">
+                                <i class="fas fa-paper-plane"></i> Жіберу
+                            </button>
+                        </div>
+
+                        <!-- СӘТТІ ХАБАРЛАМА -->
+                        <div id="successMessage" class="status-msg" style="display: none; margin-top: 20px;">
+                            <i class="fas fa-check-circle" style="color: #2ecc71; font-size: 1.5rem;"></i>
+                            <div style="margin-left: 15px;">
+                                <strong style="color: #2ecc71; font-size: 1.1rem;">✅ Тапсырма сәтті жіберілді!</strong>
+                                <p style="color: #888; margin-top: 5px;">Куратор жұмысыңызды 1-3 күн ішінде тексеретін болады.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ✅ ТАБЫЛАР АУЫСТЫРУ
+        function openTab(event, tabName) {
+            event.preventDefault();
+            
+            // Барлық табыны жасыру
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Барлық батырманы ақтандыру
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Таңдалғанды белсендіру
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ✅ САБАҚТЫ АУЫСТЫРУ
+        function changeLesson(event, title) {
+            event.preventDefault();
+            
+            // Барлық сабақтарды ақтандыру
+            document.querySelectorAll('.lesson-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Таңдалғанды белсендіру
+            event.target.classList.add('active');
+            
+            // Сабақ атауын өзгерту
+            document.getElementById('lesson-name').innerText = title;
+        }
+
+        // ✅ ТАПСЫРМАНЫ ЖІБЕРУ
+        async function submitTask() {
+            const token = localStorage.getItem('token');
+            const urlInput = document.getElementById('taskLink');
+            
+            if (!token) {
+                alert("Логинге кіріңіз!");
+                return;
+            }
+            
+            if (!urlInput || !urlInput.value.trim()) {
+                alert("Сілтемені енгізіңіз!");
+                return;
+            }
+
+            try {
+                // 🔴 МАҢЫЗДЫ: Backend-ке сұраным жіберу!
+                const response = await fetch('http://localhost:5001/api/submit-task', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        homework_url: urlInput.value.trim()  // ✅ БҰНДАЙ АТПЕН ЖІБЕРУ КЕРЕК
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("✅ Серверге жіберілді:", data);
+                    
+                    // Локально де сақтау
+                    const submission = {
+                        url: urlInput.value.trim(),
+                        course: localStorage.getItem('selectedCourseName') || 'Course',
+                        submittedAt: new Date().toLocaleString('kk-KZ'),
+                        status: 'Тексерілуде'
+                    };
+                    console.log("✅ Тапсырма сақталды:", submission);
+                    
+                    // Форманы жауу
+                    const formContainer = document.querySelector('.submission-form');
+                    if (formContainer) formContainer.style.display = 'none';
+                    
+                    const successMsg = document.getElementById('successMessage');
+                    if (successMsg) successMsg.style.display = 'flex';
+                    
+                    alert("✅ Тапсырма сәтті жіберілді!");
+                    urlInput.value = '';
+                } else {
+                    const error = await response.json();
+                    alert("❌ Қате: " + (error.error || "Сәтсіз болды"));
+                }
+            } catch (err) {
+                console.error("Қате:", err);
+                alert("❌ Сервер қатесі: " + err.message);
+            }
+        }
+
+        // ✅ ЛОКАЛДА САҚТАУ
+        function saveTaskLocally(taskUrl, currentUserStr) {
+            const user = JSON.parse(currentUserStr);
+            const email = user.email;
+            
+            if (!email) {
+                alert("❌ Пайдаланушы деректері қате!");
+                return;
+            }
+            
+            // LocalStorage-дан ескі деректерді алу
+            let submittedTasks = JSON.parse(localStorage.getItem('submittedTasks') || '{}');
+            
+            // Жаңа тапсырманы қосу
+            submittedTasks[email] = {
+                url: taskUrl,
+                course: 'Python Негіздері',
+                submittedAt: new Date().toLocaleString('kk-KZ'),
+                status: 'Тексерілуде'
+            };
+            
+            // LocalStorage-қа сақтау
+            localStorage.setItem('submittedTasks', JSON.stringify(submittedTasks));
+            
+            console.log("✅ Тапсырма сақталды:", submittedTasks[email]);
+            
+            // Хабарламасын көрсету
+            document.querySelector('.submission-form').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'flex';
+            
+            // 3 секундтан кейін кабинетке қайту
+            setTimeout(() => {
+                // window.location.href = 'dashboard.html';
+            }, 3000);
+        }
+
+        // 🔄 ДҚ ЖҮКТЕЛГЕНДЕ
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('currentUser');
+            if (!user) {
+                alert("Логинге кіріңіз!");
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

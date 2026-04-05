@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Science кіріспе | Online Academy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo"><a href="index.html">Online Academy</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Басты бет</a></li>
+                <li><a href="courses.html">Курстар</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Кіру</a>
+                <a href="register.html" class="register-btn">Тіркелу</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="course-detail-page container">
+        <section class="course-header">
+            <div class="course-header-info">
+                <h1>Data Science: <span class="highlight">Деректермен жұмыс</span></h1>
+                <p>Үлкен деректерді талдауды, статистикалық модельдер құруды және жасанды интеллект негіздерін үйреніңіз.</p>
+                
+                <div class="course-meta-big">
+                    <span><i class="fas fa-star"></i> 4.8 рейтинг</span>
+                    <span><i class="fas fa-clock"></i> 20 сағат</span>
+                    <span><i class="fas fa-user-graduate"></i> 850+ студент</span>
+                </div>
+
+                <button onclick="selectCourse('Data Science: Деректермен жұмыс', 'images/data.jpg', 45990)" class="btn-filled">
+                    Курсты таңдау
+                </button>
+            </div>
+            <div class="course-header-img">
+                <img src="images/data.jpg" alt="Data Science" onerror="this.src='https://via.placeholder.com/500x300?text=Data+Science+Course'">
+            </div>
+        </section>
+
+        <section class="course-what-learn">
+            <h2>Бұл курста не <span class="highlight">үй��енесіз?</span></h2>
+            <div class="learn-grid">
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Python кітапханалары (Pandas, NumPy)</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Дерект��рді визуализациялау (Matplotlib)</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Машиналық оқыту (Machine Learning) негіздері</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> SQL арқылы базамен жұмыс істеу</div>
+            </div>
+        </section>
+
+        <section class="course-curriculum">
+            <h2>Курс <span class="highlight">бағдарламасы</span></h2>
+            <div class="curriculum-list">
+                <div class="curriculum-item">
+                    <span class="module-num">01</span>
+                    <div class="module-text">
+                        <h4>Деректерге талдау жасау</h4>
+                        <p>Деректерді тазалау, өңдеу және алғашқы статистикалық қорытындылар.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">02</span>
+                    <div class="module-text">
+                        <h4>Визуализация әлемі</h4>
+                        <p>Графиктер мен диаграммалар арқылы деректерді сөйлету.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">03</span>
+                    <div class="module-text">
+                        <h4>Болжамдық модельдер</h4>
+                        <p>Регрессия және классификация алгоритмдерін қолдану.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Online Academy. Барлық құқықтар қорғалған.</p>
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

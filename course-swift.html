@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift (iOS қосымша жасау) | Online Academy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo"><a href="index.html">Online Academy</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Басты бет</a></li>
+                <li><a href="courses.html">Курстар</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="course-detail-page container">
+        <section class="course-header">
+            <div class="course-header-info">
+                <h1>Swift: <span class="highlight">iOS әлеміне қадам</span></h1>
+                <p>iPhone мен iPad-қа арналған заманауи қосымшалар жасап үйреніңіз. Xcode ортасында жұмыс істеп, App Store-ға алғашқы жобаңызды шығарыңыз.</p>
+                
+                <div class="course-meta-big">
+                    <span><i class="fas fa-star"></i> 4.8 рейтинг</span>
+                    <span><i class="fas fa-clock"></i> 20 сағат</span>
+                    <span><i class="fas fa-user-graduate"></i> 420+ студент</span>
+                </div>
+
+                <button onclick="selectCourse('Swift: iOS қосымша жасау', 'images/swift.jpg')" class="btn-filled">
+                    Курсты таңдау
+                </button>
+            </div>
+            <div class="course-header-img">
+                <img src="images/swift.jpg" alt="Swift iOS Development" onerror="this.src='https://via.placeholder.com/500x300?text=Swift+iOS+Course'">
+            </div>
+        </section>
+
+        <section class="course-what-learn">
+            <h2>Бұл курста не <span class="highlight">үйренесіз?</span></h2>
+            <div class="learn-grid">
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Swift синтаксисі және Optionals</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> SwiftUI арқылы интерфейс құру</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> Навигация және деректерді басқару</div>
+                <div class="learn-item"><i class="fas fa-check-circle"></i> App Store-ға жариялау талаптары</div>
+            </div>
+        </section>
+
+        <section class="course-curriculum">
+            <h2>Курс <span class="highlight">бағдарламасы</span></h2>
+            <div class="curriculum-list">
+                <div class="curriculum-item">
+                    <span class="module-num">01</span>
+                    <div class="module-text">
+                        <h4>Swift негіздері</h4>
+                        <p>Айнымалылар, циклдер және функциялар. Swift-тің қауіпсіздік мүмкіндіктері.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">02</span>
+                    <div class="module-text">
+                        <h4>SwiftUI және Layout</h4>
+                        <p>Заманауи декларативті интерфейс жасау. VStack, HStack және ZStack.</p>
+                    </div>
+                </div>
+                <div class="curriculum-item">
+                    <span class="module-num">03</span>
+                    <div class="module-text">
+                        <h4>Нақты жоба: Тапсырмалар менеджері</h4>
+                        <p>Мәліметтерді сақтайтын және өңдейтін толық iOS қосымшасын құрастыру.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-bottom">
+        <p>&copy; 2026 Online Academy. Барлық құқықтар қорғалған.</p>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Academy - Білім алу</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo">Online Academy</div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Басты бет</a></li>
+                <li><a href="courses.html">Курстар</a></li>
+                <li><a href="#">Академия туралы</a></li>
+                <li><a href="#">Контактілер</a></li>
+            </ul>
+            <div id="auth-buttons" class="auth-buttons">
+                <a href="login.html">
+                    <button class="login-btn">Кіру</button>
+                </a>
+                <a href="register.html">
+                    <button class="register-btn">Тіркелу</button>
+                </a>
+            </div>
+            <div id="auth-buttons"></div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Білім алуды <br> <span class="highlight">бүгіннен</span><br> баста</h1>
+            <a href="courses.html">
+                <button class="cta-btn">Толығырақ &rarr;</button>
+            </a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Неге бізді таңдайды?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-user-graduate"></i>
+                    <p>Сапалы білім</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-video"></i>
+                    <p>Интерактивті сабақтар</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <p>Қолдау қызметі 24/7</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <p>Ыңғайлы уақытта оқу</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="popular-courses container">
+        <h2 class="section-title">Біздің курстар</h2>
+        <div class="courses-preview-grid">
+            
+            <div class="course-preview-card">
+                <div class="preview-img" style="background-image: url('images/python.jpg');"></div>
+                <div class="preview-info">
+                    <h3>Python негіздері</h3>
+                    <p>Бастапқы деңгей</p>
+                    <div class="card-stats">⭐ 4.8 | ⏱ 12 сағат</div>
+                    <a href="courses.html" class="view-btn">Көру</a>
+                </div>
+            </div>
+
+            <div class="course-preview-card">
+                <div class="preview-img" style="background-image: url('images/figma.jpg');"></div>
+                <div class="preview-info">
+                    <h3>Веб-дизайн (Figma)</h3>
+                    <p>Бастапқы деңгей</p>
+                    <div class="card-stats">⭐ 4.9 | ⏱ 10 сағат</div>
+                    <a href="courses.html" class="view-btn">Көру</a>
+                </div>
+            </div>
+
+            <div class="course-preview-card">
+                <div class="preview-img" style="background-image: url('images/js.jpg');"></div>
+                <div class="preview-info">
+                    <h3>JavaScript негіздері</h3>
+                    <p>Орта деңгей</p>
+                    <div class="card-stats">⭐ 4.8 | ⏱ 15 сағат</div>
+                    <a href="courses.html" class="view-btn">Көру</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="view-all-container">
+            <a href="courses.html" class="outline-button">
+                <span>Барлық курстарды көру</span>
+                <i class="fas fa-arrow-right"></i> </a>
+        </div>
+    </section>
+    <section class="about-section container">
+    
+        <div class="mission-block">
+            <h2><span class="white-text">Біздің</span> <span class="highlight">миссиямыз</span></h2>
+            <p>Сапалы білімді әрбір адамға қолжетімді ету және болашақ мамандарды даярлау.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>100+</h3>
+                <p>Белсенді студенттер</p>
+            </div>
+            <div class="stat-card">
+                <h3>10+</h3>
+                <p>Кәсіби курстар</p>
+            </div>
+            <div class="stat-card">
+                <h3>100%</h3>
+                <p>Халықаралық сертификат</p>
+            </div>
+            <div class="stat-card">
+                <h3>24/7</h3>
+                <p>Кураторлық қолдау</p>
+            </div>
+        </div>
+
+        <div class="teachers-block">
+            <h2><span class="white-text">Біздің</span> <span class="highlight">топ-мұғалімдер</span></h2>
+            
+            <div class="teachers-grid">
+                <div class="teacher-card">
+                    <img src="images/teacher1.jpg" alt="Aibek Nurlan" onerror="this.src='https://via.placeholder.com/150'">
+                    <h4>Айбек Нұрланов</h4>
+                    <p>Senior Developer at Google</p>
+                </div>
+                <div class="teacher-card">
+                    <img src="images/teacher2.jpg" alt="Aruzhan Seit" onerror="this.src='https://via.placeholder.com/150'">
+                    <h4>Аружан Сейтхан</h4>
+                    <p>Lead UI/UX Designer at Meta</p>
+                </div>
+                <div class="teacher-card">
+                    <img src="images/teacher3.jpg" alt="Erzhan Tolegen" onerror="this.src='https://via.placeholder.com/150'">
+                    <h4>Ержан Төлегенов</h4>
+                    <p>Data Scientist at Amazon</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section id="pricing" class="pricing-section container">
+        <div class="mission-block">
+            <h2>Оқу <span class="highlight">бағалары</span></h2>
+            <p>Өзіңізге ыңғайлы форматты таңдап, тиімді бағамен білім алуды бастаңыз.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Топтық оқу</h3>
+                    <p class="price-value">24,990 ₸ <span>/ай</span></p>
+                </div>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> 7-8 студент</li>
+                    <li><i class="fas fa-check"></i> Аптасына 5 рет сабақ</li>
+                    <li><i class="fas fa-check"></i> Жалпы чат және қолдау</li>
+                    <li><i class="fas fa-check"></i> Тәжірибелік тапсырмалар</li>
+                </ul>
+                <a href="courses.html" class="btn-filled">Таңдау</a>
+            </div>
+
+            <div class="price-card featured">
+                <div class="badge">Ең танымал</div>
+                <div class="price-header">
+                    <h3>Жұптық сабақ</h3>
+                    <p class="price-value">42,990 ₸ <span>/ай</span></p>
+                </div>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> 2 студент</li>
+                    <li><i class="fas fa-check"></i> Оқытушымен тығыз байланыс</li>
+                    <li><i class="fas fa-check"></i> Икемді кесте</li>
+                    <li><i class="fas fa-check"></i> Деңгейге сай бағдарлама</li>
+                </ul>
+                <a href="courses.html" class="btn-filled">Таңдау</a>
+            </div>
+
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Жеке (Individual)</h3>
+                    <p class="price-value">80,000 ₸ <span>/ай</span></p>
+                </div>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> Тек 1 студент</li>
+                    <li><i class="fas fa-check"></i> Экспертпен жеке жұмыс</li>
+                    <li><i class="fas fa-check"></i> Кез-келген уақытта оқу</li>
+                    <li><i class="fas fa-check"></i> 100% фокус нәтижеде</li>
+                </ul>
+                <a href="courses.html" class="btn-filled">Таңдау</a>
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <div class="logo">Online Academy</div>
+                <p>Біз заманауи технологияларды игеруге және сапалы білім алуға көмектесеміз. Болашағыңды бүгіннен баста!</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4>Пайдалы сілтемелер</h4>
+                <ul>
+                    <li><a href="index.html">Басты бет</a></li>
+                    <li><a href="courses.html">Курстар</a></li>
+                    <li><a href="#about">Академия туралы</a></li>
+                    <li><a href="#pricing">Бағалар</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Байланыс</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +7 (777) 000-00-00</li>
+                    <li><i class="fas fa-envelope"></i> info@academy.kz</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Алматы қ., Абай даңғылы, 10</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Online Academy. Барлық құқықтар қорғалған.</p>
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

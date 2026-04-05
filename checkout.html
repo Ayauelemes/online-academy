@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Төлем жасау | Online Academy</title>
+    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="checkout.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="checkout-body">
+
+    <div class="container">
+        <main class="checkout-grid">
+            
+            <section class="payment-card">
+                <h2>Төлем жасау</h2>
+                <div class="price-box">
+                    <p>Таңдалған тариф құны</p>
+                    <h1 id="renderPrice">0 ₸</h1>
+                </div>
+
+                <form id="paymentForm">
+                    <div class="input-group">
+                        <label>Карта нөмірі</label>
+                        <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    </div>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Мерзімі</label>
+                            <input type="text" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="password" placeholder="***" maxlength="3" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="pay-button">Төлеу және бастау</button>
+                </form>
+            </section>
+
+            <aside class="summary-card">
+                <h3>Тапсырыс мәліметі</h3>
+                <div class="course-info-flex">
+                    <img id="renderImg" src="" alt="Course">
+                    <div>
+                        <h4 id="renderCourseName">Жүктелуде...</h4>
+                        <p id="renderPlanName">Тариф</p>
+                    </div>
+                </div>
+
+                <div class="line-item">
+                    <span>Курс бағасы:</span>
+                    <span id="basePriceLabel">0 ₸</span>
+                </div>
+                <div class="line-item">
+                    <span>Жеңілдік:</span>
+                    <span style="color: #00ff00;">- 2,000 ₸</span>
+                </div>
+                <div class="line-item total">
+                    <span>Барлығы:</span>
+                    <span id="finalPriceLabel">0 ₸</span>
+                </div>
+            </aside>
+
+        </main>
+    </div>
+
+    <script src="checkout.js"></script>
+</body>
+</html>
