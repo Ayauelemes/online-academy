@@ -21,11 +21,10 @@ const DB_PASSWORD = process.env.DB_PASSWORD || '1234';
 const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
 
 const pool = new Pool({
-    user: DB_USER,
-    host: DB_HOST,
-    database: DB_NAME,
-    password: DB_PASSWORD,
-    port: DB_PORT,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 
@@ -490,10 +489,9 @@ app.post('/api/submit-homework', authMiddleware, async (req, res) => {
     }
 });
 
-const PORT = parseInt(process.env.PORT || '5001', 10);
-app.listen(PORT, () => {
-    console.log(`✅ Server: https://online-academy-zw35.onrender.com:${PORT}`);
-    console.log(`📦 DB: ${DB_NAME} (${DB_HOST}:${DB_PORT})`);
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Server is running on port ${PORT}`);
 });
 
 module.exports = app;
