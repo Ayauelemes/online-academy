@@ -398,23 +398,22 @@ app.get('/api/admin/payments', authMiddleware, adminOnly, async (req, res) => {
 
 
 app.post('/api/submit-task', authMiddleware, async (req, res) => {
-    const { homework_url } = req.body; 
-    
-    if (!homework_url) return res.status(400).json({ error: 'Сілтеме қажет' });
+    const { homework_url } = req.body;
+    if (!homework_url) return res.status(400).json({ error: 'Сілтеме бос!' });
 
     try {
-        const userResult = await pool.query('SELECT id, email FROM users WHERE email = $1', [req.user.email]);
-        const user = userResult.rows[0];
+        // Пайдаланушының ID-сін алу
+        const userRes = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const userId = userRes.rows[0].id;
 
-        const result = await pool.query(
-            'INSERT INTO homework (user_id, student_email, homework_url, status) VALUES ($1, $2, $3, $4) RETURNING *',
-            [user.id, user.email, homework_url, 'pending']
+        await pool.query(
+            'INSERT INTO homework (user_id, student_email, homework_url, status) VALUES ($1, $2, $3, $4)',
+            [userId, req.user.email, homework_url, 'pending']
         );
-        
-        res.json({ success: true, data: result.rows[0] });
+        res.json({ success: true, message: 'Тапсырма жіберілді!' });
     } catch (err) {
-        console.error('Error:', err);
-        res.status(500).json({ error: 'Server error' });
+        console.error(err);
+        res.status(500).json({ error: 'Базаға жазу кезінде қате шықты' });
     }
 });
 
