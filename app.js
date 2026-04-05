@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Логин берілетін деректер:", { email, password });
 
             try {
-                const response = await fetch('http://localhost:5001/api/login', {
+                const response = await fetch('https://online-academy-zw35.onrender.com/api/login', {
                     method: 'POST',
                     mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('http://localhost:5001/api/register', {
+                const response = await fetch('https://online-academy-zw35.onrender.com/api/register', {
                     method: 'POST',
                     mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -167,7 +167,7 @@ async function displayEnrolledCourses() {
     }
 
     try {
-        const response = await fetch('http://localhost:5001/api/my-courses', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/my-courses', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -246,7 +246,7 @@ async function loadPaymentHistory() {
     if (!tableBody || !token) return;
 
     try {
-        const response = await fetch('http://localhost:5001/api/payments', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/payments', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -288,7 +288,7 @@ async function loadFreezeInfo() {
     if (!freezeDisplay || !token) return;
 
     try {
-        const response = await fetch('http://localhost:5001/api/freeze-info', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/freeze-info', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -309,7 +309,7 @@ async function loadTeacherDashboard() {
     if (!teacherStudentList || !token) return;
 
     try {
-        const response = await fetch('http://localhost:5001/api/teacher/students', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/teacher/students', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -362,7 +362,7 @@ async function loadAdminStats() {
     if (!token) return;
 
     try {
-        const response = await fetch('http://localhost:5001/api/admin/stats', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/admin/stats', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -429,7 +429,7 @@ async function selectPlan(planName, price) {
     localStorage.setItem('planPrice', price);
     
     try {
-        const response = await fetch('http://localhost:5001/api/payment', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/payment', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -464,7 +464,7 @@ async function useFreeze() {
     }
 
     try {
-        const response = await fetch('http://localhost:5001/api/use-freeze', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/use-freeze', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -499,7 +499,7 @@ async function submitTask() {
     }
 
     try {
-        const response = await fetch('http://localhost:5001/api/submit-task', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-task', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json', 
@@ -632,7 +632,7 @@ async function processMonthlyPayment() {
     const amount = parseInt(selectedPrice);
 
     try {
-        const response = await fetch('http://localhost:5001/api/payment', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/payment', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -692,15 +692,15 @@ async function loadAdminStats() {
     const token = localStorage.getItem('token');
     
     try {
-        const statsRes = await fetch('http://localhost:5001/api/admin/stats', {
+        const statsRes = await fetch('https://online-academy-zw35.onrender.com/api/admin/stats', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const stats = await statsRes.json();
         
         document.getElementById('admin-user-count').innerText = stats.users || 0;
         document.getElementById('admin-total-money').innerText = (stats.revenue || 0).toLocaleString() + ' ₸';
-        
-        const usersRes = await fetch('http://localhost:5001/api/students', {
+
+        const usersRes = await fetch('https://online-academy-zw35.onrender.com/api/students', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const users = await usersRes.json();
@@ -718,8 +718,8 @@ async function loadAdminStats() {
                 </td>
             </tr>
         `).join('');
-        
-        const paymentsRes = await fetch('http://localhost:5001/api/admin/payments', {
+
+        const paymentsRes = await fetch('https://online-academy-zw35.onrender.com/api/admin/payments', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const payments = await paymentsRes.json();
@@ -745,7 +745,7 @@ async function loadCourseManagement() {
     const token = localStorage.getItem('token');
     
     try {
-        const res = await fetch('http://localhost:5001/api/courses', {
+        const res = await fetch('https://online-academy-zw35.onrender.com/api/courses', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const courses = await res.json();
@@ -786,7 +786,7 @@ async function addNewCourse() {
     }
     
     try {
-        const res = await fetch('http://localhost:5001/api/courses', {
+        const res = await fetch('https://online-academy-zw35.onrender.com/api/courses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -811,7 +811,7 @@ async function deleteCourse(courseId) {
     const token = localStorage.getItem('token');
     
     try {
-        const res = await fetch(`http://localhost:5001/api/courses/${courseId}`, {
+        const res = await fetch(`https://online-academy-zw35.onrender.com/api/courses/${courseId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -832,7 +832,7 @@ async function changeUserRole(userId, email) {
     const token = localStorage.getItem('token');
     
     try {
-        const res = await fetch(`http://localhost:5001/api/users/${userId}/role`, {
+        const res = await fetch(`https://online-academy-zw35.onrender.com/api/users/${userId}/role`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -857,7 +857,7 @@ async function loadTeacherDashboard() {
     if (!teacherStudentList || !token) return;
 
     try {
-        const response = await fetch('http://localhost:5001/api/teacher/homework', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/teacher/homework', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -949,7 +949,7 @@ async function approveTask() {
     }
 
     try {
-        const response = await fetch('http://localhost:5001/api/teacher/approve-homework', {
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/teacher/approve-homework', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

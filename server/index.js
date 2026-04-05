@@ -492,7 +492,7 @@ app.post('/api/submit-homework', authMiddleware, async (req, res) => {
 
 const PORT = parseInt(process.env.PORT || '5001', 10);
 app.listen(PORT, () => {
-    console.log(`✅ Server: http://localhost:${PORT}`);
+    console.log(`✅ Server: https://online-academy-zw35.onrender.com:${PORT}`);
     console.log(`📦 DB: ${DB_NAME} (${DB_HOST}:${DB_PORT})`);
 });
 
