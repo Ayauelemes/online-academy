@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Логин берілетін деректер:", { email, password });
 
             try {
+                // МЫСАЛЫ:
                 const response = await fetch('https://online-academy-zw35.onrender.com/api/login', {
-                    method: 'POST',
+                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });

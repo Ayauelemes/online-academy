@@ -8,7 +8,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: '*', 
+    origin: '*', // Барлық сайттардан (соның ішінде GitHub Pages-тен) рұқсат беру
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
