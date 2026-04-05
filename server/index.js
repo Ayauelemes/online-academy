@@ -14,12 +14,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const DB_USER = process.env.DB_USER || 'postgres';
-const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_NAME = process.env.DB_NAME || 'online_academy';
-const DB_PASSWORD = process.env.DB_PASSWORD || '1234';
-const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
-
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
