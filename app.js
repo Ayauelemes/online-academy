@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await fetch('https://online-academy-zw35.onrender.com/api/login', {
                     method: 'POST',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
@@ -358,25 +357,67 @@ function viewStudentWork(studentId, email) {
 
 async function loadAdminStats() {
     const token = localStorage.getItem('token');
-    
     if (!token) return;
 
     try {
-        const response = await fetch('https://online-academy-zw35.onrender.com/api/admin/stats', {
+        // 1. Загрузка статистики
+        const statsRes = await fetch('https://online-academy-zw35.onrender.com/api/admin/stats', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
-        if (!response.ok) throw new Error('API Error');
-
-        const stats = await response.json();
+        const stats = await statsRes.json();
         
-        const userCount = document.getElementById('admin-user-count');
-        const totalMoney = document.getElementById('admin-total-money');
+        document.getElementById('admin-user-count').innerText = stats.users || 0;
+        document.getElementById('admin-total-money').innerText = (stats.revenue || 0).toLocaleString() + ' ₸';
 
-        if (userCount) userCount.innerText = stats.users || 0;
-        if (totalMoney) totalMoney.innerText = (stats.revenue || 0).toLocaleString() + " ₸";
+        // 2. Загрузка списка студентов (ЗДЕСЬ БЫЛА ОШИБКА)
+        const usersRes = await fetch('https://online-academy-zw35.onrender.com/api/students', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const users = await usersRes.json();
+        
+        const tbody = document.getElementById('admin-users-table');
+        
+        // Проверка: является ли 'users' массивом перед использованием .map()
+        if (Array.isArray(users)) {
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>#${u.id}</td>
+                    <td>${u.email}</td>
+                    <td>${u.role === 'admin' ? '👨‍💼 АДМИН' : u.role === 'teacher' ? '👨‍🏫 МҰҒАЛІМ' : '👨‍🎓 СТУДЕНТ'}</td>
+                    <td>
+                        <button onclick="changeUserRole(${u.id}, '${u.email}')" style="background: #e2f113; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                            Өзгерт
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            console.error('Данные студентов не являются массивом:', users);
+            tbody.innerHTML = '<tr><td colspan="4">Қате: деректерді алу мүмкін болмады</td></tr>';
+        }
+
+        // 3. Загрузка платежей
+        const paymentsRes = await fetch('https://online-academy-zw35.onrender.com/api/admin/payments', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const payments = await paymentsRes.json();
+        
+        const paymentsTbody = document.getElementById('admin-payments-table');
+        if (Array.isArray(payments)) {
+            paymentsTbody.innerHTML = payments.map(p => `
+                <tr>
+                    <td>${p.email}</td>
+                    <td>${p.amount} ₸</td>
+                    <td>${p.month_name}</td>
+                    <td>${new Date(p.payment_date).toLocaleDateString('kk-KZ')}</td>
+                </tr>
+            `).join('');
+        }
+        
+        loadCourseManagement();
+        
     } catch (err) {
-        console.error("Админ статистикасы қатесі:", err);
+        console.error('Admin stats error:', err);
     }
 }
 
