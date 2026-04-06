@@ -459,31 +459,6 @@ app.post('/api/teacher/approve-homework', authMiddleware, teacherOnly, async (re
     }
 });
 
-app.post('/api/submit-homework', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ error: 'Токен жоқ' });
-        
-        const token = authHeader.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
-        
-        const { homework_url } = req.body;
-        if (!homework_url) return res.status(400).json({ error: 'Сілтеме бос' });
-
-        const userRes = await pool.query('SELECT id, email FROM users WHERE email = $1', [decoded.email]);
-        const user = userRes.rows[0];
-
-        await pool.query(
-            'INSERT INTO homework (user_id, student_email, homework_url, status) VALUES ($1, $2, $3, $4)',
-            [user.id, user.email, homework_url, 'pending']
-        );
-
-        res.json({ success: true, message: 'Тапсырма сәтті жіберілді!' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Сервер қатесі' });
-    }
-});
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {

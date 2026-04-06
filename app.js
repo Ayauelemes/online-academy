@@ -538,11 +538,12 @@ async function submitHomework() {
 
     if (!homeworkUrl) {
         alert("Сілтемені енгізіңіз!");
-        return;
+        return;  // ✅ ҚАЛПЫНА КЕЛТІРІҢІЗ - деректер БД-ге жазылсын!
     }
 
     try {
-        const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-homework', {
+        // ✅ ДҰРЫС ENDPOINT-ты пайдаланыңыз:
+        const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-task', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
