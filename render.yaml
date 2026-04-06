@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: online-academy
+    runtime: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.js
+    envVars:
+      - key: DATABASE_URL
+        scope: run
+      - key: JWT_SECRET
+        scope: run
