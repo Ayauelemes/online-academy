@@ -152,15 +152,15 @@
             }
 
             try {
-                // 🔴 МАҢЫЗДЫ: Backend-ке сұраным жіберу!
-                const response = await fetch('http://localhost:5001/api/submit-task', {
+                // ✅ RENDER СЕРВЕРІ (интернетте):
+                const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-task', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ 
-                        homework_url: urlInput.value.trim()  // ✅ БҰНДАЙ АТПЕН ЖІБЕРУ КЕРЕК
+                        homework_url: urlInput.value.trim()
                     })
                 });
 
@@ -168,16 +168,7 @@
                     const data = await response.json();
                     console.log("✅ Серверге жіберілді:", data);
                     
-                    // Локально де сақтау
-                    const submission = {
-                        url: urlInput.value.trim(),
-                        course: localStorage.getItem('selectedCourseName') || 'Course',
-                        submittedAt: new Date().toLocaleString('kk-KZ'),
-                        status: 'Тексерілуде'
-                    };
-                    console.log("✅ Тапсырма сақталды:", submission);
-                    
-                    // Форманы жауу
+                    // Форманы жасыру
                     const formContainer = document.querySelector('.submission-form');
                     if (formContainer) formContainer.style.display = 'none';
                     
