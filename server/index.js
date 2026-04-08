@@ -8,19 +8,22 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: '*', // Барлық сайттардан (соның ішінде GitHub Pages-тен) рұқсат беру
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    user:     process.env.DB_USER,
+    host:     process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port:     process.env.DB_PORT,
+    ssl: false
 });
 
-
-
+// ─── DB INIT ─────────────────────────────────────────────────────────────────
 async function initializeTables() {
     try {
         console.log('📊 Кестелерді құруда...');
@@ -94,10 +97,7 @@ async function initializeTables() {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );
         `);
-        
         console.log('✅ freezes');
-
-// index.js - initializeTables() ішіне қосыңыз:
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS homework (
@@ -118,13 +118,12 @@ async function initializeTables() {
 
 initializeTables();
 
-
+// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 const authMiddleware = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'No token' });
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret');
-        req.user = decoded;
+        req.user = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret');
         next();
     } catch (err) {
         res.status(401).json({ error: 'Invalid token' });
@@ -141,25 +140,17 @@ const teacherOnly = (req, res, next) => {
     next();
 };
 
-app.get('/api/students', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT id, email, role FROM users WHERE role = $1 ORDER BY id', ['student']);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: 'DB error' });
-    }
-});
-
+// ─── AUTH ──────────────────────────────────────────────────────────────────────
 app.post('/api/register', async (req, res) => {
     const { email, password } = req.body || {};
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
     try {
-        const hash = await bcrypt.hash(password, 10);
+        const hash   = await bcrypt.hash(password, 10);
         const result = await pool.query(
             'INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role',
             [email, hash, 'student']
         );
-        const user = result.rows[0];
+        const user  = result.rows[0];
         await pool.query('INSERT INTO freezes (user_id, freeze_days) VALUES ($1, $2)', [user.id, 30]);
         const token = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET || 'dev-secret', { expiresIn: '8h' });
         res.status(201).json({ id: user.id, email: user.email, role: user.role, token });
@@ -173,13 +164,15 @@ app.post('/api/login', async (req, res) => {
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
     try {
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        const user = result.rows[0];
+        const user   = result.rows[0];
         if (!user) return res.status(401).json({ error: 'Invalid credentials' });
         const ok = await bcrypt.compare(password, user.password_hash);
         if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+
         let role = user.role || 'student';
-        if (email === 'admin@mail.ru') role = 'admin';
+        if (email === 'admin@mail.ru')   role = 'admin';
         else if (email === 'teacher@mail.ru') role = 'teacher';
+
         const token = jwt.sign({ email: user.email, role }, process.env.JWT_SECRET || 'dev-secret', { expiresIn: '8h' });
         res.json({ message: 'Success', user: { id: user.id, email: user.email, role }, token });
     } catch (err) {
@@ -187,6 +180,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// ─── COURSES (public) ──────────────────────────────────────────────────────────
 app.get('/api/courses', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM courses ORDER BY id');
@@ -196,150 +190,7 @@ app.get('/api/courses', async (req, res) => {
     }
 });
 
-app.post('/api/enroll', authMiddleware, async (req, res) => {
-    const { course_id } = req.body;
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0].id;
-        const result = await pool.query('INSERT INTO enrollments (user_id, course_id, status) VALUES ($1, $2, $3) RETURNING *', [user_id, course_id, 'active']);
-        res.json(result.rows[0]);
-    } catch (err) {
-        res.status(400).json({ error: 'Already enrolled' });
-    }
-});
-
-app.get('/api/my-courses', authMiddleware, async (req, res) => {
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0]?.id;
-        if (!user_id) return res.status(404).json({ error: 'User not found' });
-        const result = await pool.query(`
-            SELECT c.id, c.name, c.description, c.price, c.image_url, e.status
-            FROM enrollments e
-            JOIN courses c ON e.course_id = c.id
-            WHERE e.user_id = $1
-        `, [user_id]);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.post('/api/payment', authMiddleware, async (req, res) => {
-    const { amount, month_name } = req.body;
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0].id;
-        const result = await pool.query('INSERT INTO payments (user_id, amount, month_name, status) VALUES ($1, $2, $3, $4) RETURNING *', [user_id, amount, month_name, 'paid']);
-        res.json(result.rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.get('/api/payments', authMiddleware, async (req, res) => {
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0]?.id;
-        const result = await pool.query('SELECT * FROM payments WHERE user_id = $1 ORDER BY payment_date DESC', [user_id]);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.get('/api/freeze-info', authMiddleware, async (req, res) => {
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0]?.id;
-        const result = await pool.query('SELECT freeze_days, frozen_dates FROM freezes WHERE user_id = $1', [user_id]);
-        res.json(result.rows[0] || { freeze_days: 30, frozen_dates: [] });
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.post('/api/use-freeze', authMiddleware, async (req, res) => {
-    try {
-        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const user_id = userResult.rows[0].id;
-        const freezeResult = await pool.query('SELECT * FROM freezes WHERE user_id = $1', [user_id]);
-        const freeze = freezeResult.rows[0];
-        if (!freeze || freeze.freeze_days <= 0) return res.status(400).json({ error: 'No freeze days available' });
-        const today = new Date().toISOString().split('T')[0];
-        const frozen_dates = freeze.frozen_dates || [];
-        frozen_dates.push(today);
-        await pool.query('UPDATE freezes SET freeze_days = freeze_days - 1, used_days = used_days + 1, frozen_dates = $1 WHERE user_id = $2', [frozen_dates, user_id]);
-        res.json({ message: 'Freeze day used', remaining: freeze.freeze_days - 1 });
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.get('/api/admin/stats', authMiddleware, adminOnly, async (req, res) => {
-    try {
-        const usersResult = await pool.query('SELECT COUNT(*) as count FROM users');
-        const paymentsResult = await pool.query('SELECT SUM(amount) as total FROM payments');
-        res.json({ users: parseInt(usersResult.rows[0].count), revenue: parseInt(paymentsResult.rows[0].total) || 0 });
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.get('/api/teacher/students', authMiddleware, teacherOnly, async (req, res) => {
-    try {
-        const result = await pool.query('SELECT id, email, role FROM users WHERE role = $1', ['student']);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.post('/api/update-task', async (req, res) => {
-    const { email, status } = req.body;
-    try {
-        await pool.query('UPDATE users SET homework_status = $1 WHERE email = $2', [status, email]);
-        res.json({ message: "Status updated" });
-    } catch (err) {
-        res.status(500).json({ error: 'Error' });
-    }
-});
-// Студенттің толық деректерін алу (6 кестенің біріктіруі)
-app.get('/api/student-complete-data', authMiddleware, async (req, res) => {
-    try {
-        const result = await pool.query(`
-            SELECT 
-                u.id,
-                u.email,
-                u.role,
-                c.id as course_id,
-                c.name as course_name,
-                c.price,
-                l.id as lesson_id,
-                l.title as lesson_title,
-                e.status as enrollment_status,
-                p.amount as payment_amount,
-                p.payment_date,
-                f.freeze_days,
-                f.used_days
-            FROM users u
-            LEFT JOIN enrollments e ON u.id = e.user_id
-            LEFT JOIN courses c ON e.course_id = c.id
-            LEFT JOIN lessons l ON c.id = l.course_id
-            LEFT JOIN payments p ON u.id = p.user_id
-            LEFT JOIN freezes f ON u.id = f.user_id
-            WHERE u.email = $1
-            ORDER BY c.id, l.order_number
-        `, [req.user.email]);
-
-        res.json(result.rows);
-    } catch (err) {
-        console.error('Error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// КУРСТАРДЫ ҚОСУ
+// ADMIN: добавить курс
 app.post('/api/courses', authMiddleware, adminOnly, async (req, res) => {
     const { name, price, image_url, description } = req.body;
     try {
@@ -353,7 +204,23 @@ app.post('/api/courses', authMiddleware, adminOnly, async (req, res) => {
     }
 });
 
-// КУРСТЫ ӨШІРУ
+// ADMIN: редактировать курс
+app.put('/api/courses/:id', authMiddleware, adminOnly, async (req, res) => {
+    const { id } = req.params;
+    const { name, price, image_url, description } = req.body;
+    try {
+        const result = await pool.query(
+            'UPDATE courses SET name=$1, price=$2, image_url=$3, description=$4 WHERE id=$5 RETURNING *',
+            [name, price, image_url, description, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Course not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: 'Error updating course' });
+    }
+});
+
+// ADMIN: удалить курс
 app.delete('/api/courses/:id', authMiddleware, adminOnly, async (req, res) => {
     const { id } = req.params;
     try {
@@ -364,22 +231,71 @@ app.delete('/api/courses/:id', authMiddleware, adminOnly, async (req, res) => {
     }
 });
 
-// ПАЙДАЛАНУШЫНЫҢ РӨЛІН ӨЗГЕРТУ
-app.put('/api/users/:id/role', authMiddleware, adminOnly, async (req, res) => {
-    const { id } = req.params;
-    const { role } = req.body;
+// ─── ENROLLMENTS ───────────────────────────────────────────────────────────────
+app.post('/api/enroll', authMiddleware, async (req, res) => {
+    const { course_id } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE users SET role = $1 WHERE id = $2 RETURNING *',
-            [role, id]
+        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const user_id    = userResult.rows[0].id;
+        const result     = await pool.query(
+            'INSERT INTO enrollments (user_id, course_id, status) VALUES ($1, $2, $3) RETURNING *',
+            [user_id, course_id, 'active']
         );
         res.json(result.rows[0]);
     } catch (err) {
-        res.status(500).json({ error: 'Error updating role' });
+        res.status(400).json({ error: 'Already enrolled' });
     }
 });
 
-// ТӨЛЕМ ТАРИХЫ
+app.get('/api/my-courses', authMiddleware, async (req, res) => {
+    try {
+        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        if (!userResult.rows[0]) return res.status(404).json({ error: 'User not found' });
+        const user_id = userResult.rows[0].id;
+        
+        const result = await pool.query(`
+            SELECT c.* FROM courses c
+            JOIN enrollments e ON c.id = e.course_id
+            WHERE e.user_id = $1
+        `, [user_id]);
+        
+        res.json(result.rows);
+    } catch (err) {
+    if (err.code === '23505') { // unique constraint violation
+        return res.status(400).json({ error: 'Already enrolled' });
+    }
+    res.status(500).json({ error: 'Server error' });
+}
+});
+
+// ─── PAYMENTS ──────────────────────────────────────────────────────────────────
+app.post('/api/payment', authMiddleware, async (req, res) => {
+    const { amount, month_name } = req.body;
+    try {
+        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const user_id    = userResult.rows[0].id;
+        const result     = await pool.query(
+            'INSERT INTO payments (user_id, amount, month_name, status) VALUES ($1, $2, $3, $4) RETURNING *',
+            [user_id, amount, month_name, 'paid']
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/payments', authMiddleware, async (req, res) => {
+    try {
+        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const user_id    = userResult.rows[0]?.id;
+        const result     = await pool.query('SELECT * FROM payments WHERE user_id = $1 ORDER BY payment_date DESC', [user_id]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ADMIN: все платежи
 app.get('/api/admin/payments', authMiddleware, adminOnly, async (req, res) => {
     try {
         const result = await pool.query(`
@@ -394,75 +310,176 @@ app.get('/api/admin/payments', authMiddleware, adminOnly, async (req, res) => {
     }
 });
 
-
-app.post('/api/submit-task', authMiddleware, async (req, res) => {
-    const { homework_url } = req.body;
-    if (!homework_url) return res.status(400).json({ error: 'Сілтеме бос!' });
-
+// ─── FREEZE ────────────────────────────────────────────────────────────────────
+app.get('/api/freeze-info', authMiddleware, async (req, res) => {
     try {
-        // Пайдаланушының ID-сін алу
-        const userRes = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
-        const userId = userRes.rows[0].id;
+        const userResult = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const user_id    = userResult.rows[0]?.id;
+        const result     = await pool.query('SELECT freeze_days, frozen_dates FROM freezes WHERE user_id = $1', [user_id]);
+        res.json(result.rows[0] || { freeze_days: 30, frozen_dates: [] });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/api/use-freeze', authMiddleware, async (req, res) => {
+    try {
+        const userResult   = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const user_id      = userResult.rows[0].id;
+        const freezeResult = await pool.query('SELECT * FROM freezes WHERE user_id = $1', [user_id]);
+        const freeze       = freezeResult.rows[0];
+        if (!freeze || freeze.freeze_days <= 0) return res.status(400).json({ error: 'No freeze days available' });
+
+        const today        = new Date().toISOString().split('T')[0];
+        const frozen_dates = freeze.frozen_dates || [];
+        frozen_dates.push(today);
 
         await pool.query(
-            'INSERT INTO homework (user_id, student_email, homework_url, status) VALUES ($1, $2, $3, $4)',
-            [userId, req.user.email, homework_url, 'pending']
+            'UPDATE freezes SET freeze_days = freeze_days - 1, used_days = used_days + 1, frozen_dates = $1 WHERE user_id = $2',
+            [frozen_dates, user_id]
         );
-        res.json({ success: true, message: 'Тапсырма жіберілді!' });
+        res.json({ message: 'Freeze day used', remaining: freeze.freeze_days - 1 });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Базаға жазу кезінде қате шықты' });
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ─── ADMIN: STATS & USERS ─────────────────────────────────────────────────────
+app.get('/api/admin/stats', authMiddleware, adminOnly, async (req, res) => {
+    try {
+        const usersResult    = await pool.query('SELECT COUNT(*) as count FROM users');
+        const paymentsResult = await pool.query('SELECT SUM(amount) as total FROM payments');
+        res.json({
+            users:   parseInt(usersResult.rows[0].count),
+            revenue: parseInt(paymentsResult.rows[0].total) || 0
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Список всех пользователей (с authMiddleware + adminOnly)
+app.get('/api/students', authMiddleware, adminOnly, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT id, email, role FROM users ORDER BY id DESC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Error fetching users' });
+    }
+});
+
+// Изменить роль
+app.put('/api/users/:id/role', authMiddleware, adminOnly, async (req, res) => {
+    const { id }   = req.params;
+    const { role } = req.body;
+    try {
+        const result = await pool.query(
+            'UPDATE users SET role = $1 WHERE id = $2 RETURNING *',
+            [role, id]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: 'Error updating role' });
+    }
+});
+
+// ─── TEACHER ───────────────────────────────────────────────────────────────────
+app.get('/api/teacher/students', authMiddleware, teacherOnly, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT id, email, role FROM users WHERE role = $1', ['student']);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
     }
 });
 
 app.get('/api/teacher/homework', authMiddleware, teacherOnly, async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT 
-                id,
-                user_id,
-                student_email,
-                homework_url,
-                status,
-                submitted_at
+            SELECT id, user_id, student_email, homework_url, status, submitted_at
             FROM homework
             ORDER BY submitted_at DESC
         `);
         res.json(result.rows);
     } catch (err) {
-        console.error('Error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
 app.post('/api/teacher/approve-homework', authMiddleware, teacherOnly, async (req, res) => {
-    const { homework_id, status } = req.body; // status: 'approved' немесе 'rejected'
-    
+    const { homework_id, status } = req.body;
     if (!['approved', 'rejected'].includes(status)) {
         return res.status(400).json({ error: 'Invalid status' });
     }
-    
     try {
         const result = await pool.query(
             'UPDATE homework SET status = $1 WHERE id = $2 RETURNING *',
             [status, homework_id]
         );
-        
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Homework not found' });
-        }
-        
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Homework not found' });
         res.json({ success: true, message: `Homework ${status}`, data: result.rows[0] });
     } catch (err) {
-        console.error('Error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
+// ─── HOMEWORK (student) ───────────────────────────────────────────────────────
+app.post('/api/submit-task', authMiddleware, async (req, res) => {
+    const { homework_url } = req.body;
+    if (!homework_url) return res.status(400).json({ error: 'Сілтеме бос!' });
+    try {
+        const userRes = await pool.query('SELECT id FROM users WHERE email = $1', [req.user.email]);
+        const userId  = userRes.rows[0].id;
+        await pool.query(
+            'INSERT INTO homework (user_id, student_email, homework_url, status) VALUES ($1, $2, $3, $4)',
+            [userId, req.user.email, homework_url, 'pending']
+        );
+        res.json({ success: true, message: 'Тапсырма жіберілді!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Базаға жазу кезінде қате шықты' });
+    }
+});
 
+app.post('/api/update-task', async (req, res) => {
+    const { email, status } = req.body;
+    try {
+        await pool.query('UPDATE homework SET status = $1 WHERE student_email = $2', [status, email]);
+        res.json({ message: "Status updated" });
+    } catch (err) {
+        res.status(500).json({ error: 'Error' });
+    }
+});
+
+// ─── STUDENT COMPLETE DATA ────────────────────────────────────────────────────
+app.get('/api/student-complete-data', authMiddleware, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                u.id, u.email, u.role,
+                c.id as course_id, c.name as course_name, c.price,
+                l.id as lesson_id, l.title as lesson_title,
+                e.status as enrollment_status,
+                p.amount as payment_amount, p.payment_date,
+                f.freeze_days, f.used_days
+            FROM users u
+            LEFT JOIN enrollments e ON u.id = e.user_id
+            LEFT JOIN courses c ON e.course_id = c.id
+            LEFT JOIN lessons l ON c.id = l.course_id
+            LEFT JOIN payments p ON u.id = p.user_id
+            LEFT JOIN freezes f ON u.id = f.user_id
+            WHERE u.email = $1
+            ORDER BY c.id, l.order_number
+        `, [req.user.email]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ─── SERVER ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on http://localhost:${PORT}`);
 });
 
 module.exports = app;

@@ -33,12 +33,14 @@ function renderCourses(filteredList) {
                 </div>
                 <div class="card-info">
                     <h3>${course.title}</h3>
-                    <p class="teacher"> ${course.teacher}</p>
+                    <p class="teacher">${course.teacher}</p>
                     <div class="card-meta">
                         <span>⭐ ${course.rating}</span>
                         <span>⏱ ${course.time}</span>
                     </div>
-                    <a href="${course.link}" class="start-btn"> Курсты бастау</a>
+                    <button onclick="selectCourse(${course.id}, '${course.title}', '${course.img}', ${course.price})" style="width: 100%; padding: 12px; background: #e2f113; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        💳 Төлем жасау
+                    </button>
                 </div>
             </div>
         `;

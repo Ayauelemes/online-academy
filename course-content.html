@@ -141,6 +141,11 @@
             const token = localStorage.getItem('token');
             const urlInput = document.getElementById('taskLink');
             
+            console.log('🔍 submitTask начата');
+            console.log('Token есть?', !!token);
+            console.log('URL инпут:', urlInput);
+            console.log('URL значение:', urlInput?.value);
+            
             if (!token) {
                 alert("Логинге кіріңіз!");
                 return;
@@ -151,9 +156,10 @@
                 return;
             }
 
+            console.log('📤 Отправляю URL:', urlInput.value.trim());
+
             try {
-                // ✅ RENDER СЕРВЕРІ (интернетте):
-                const response = await fetch('https://online-academy-zw35.onrender.com/api/submit-task', {
+                const response = await fetch('http://localhost:5001/api/submit-task', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -164,25 +170,34 @@
                     })
                 });
 
+                console.log('📊 Статус ответа:', response.status);
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log("✅ Серверге жіберілді:", data);
                     
                     // Форманы жасыру
                     const formContainer = document.querySelector('.submission-form');
-                    if (formContainer) formContainer.style.display = 'none';
+                    if (formContainer) {
+                        formContainer.style.display = 'none';
+                        console.log('✅ Форма жасырылды');
+                    }
                     
                     const successMsg = document.getElementById('successMessage');
-                    if (successMsg) successMsg.style.display = 'flex';
+                    if (successMsg) {
+                        successMsg.style.display = 'flex';
+                        console.log('✅ Сәтті хабарлама көрсетілді');
+                    }
                     
                     alert("✅ Тапсырма сәтті жіберілді!");
-                    urlInput.value = '';
+                    if(urlInput) urlInput.value = '';
                 } else {
                     const error = await response.json();
+                    console.error("❌ Серверден қате:", error);
                     alert("❌ Қате: " + (error.error || "Сәтсіз болды"));
                 }
             } catch (err) {
-                console.error("Қате:", err);
+                console.error("❌ Қате:", err);
                 alert("❌ Сервер қатесі: " + err.message);
             }
         }
