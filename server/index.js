@@ -261,14 +261,14 @@ app.get('/api/my-courses', authMiddleware, async (req, res) => {
         
         res.json(result.rows);
     } catch (err) {
-    if (err.code === '23505') { // unique constraint violation
+    if (err.code === '23505') { 
         return res.status(400).json({ error: 'Already enrolled' });
     }
     res.status(500).json({ error: 'Server error' });
 }
 });
 
-// ─── PAYMENTS ──────────────────────────────────────────────────────────────────
+
 app.post('/api/payment', authMiddleware, async (req, res) => {
     const { amount, month_name } = req.body;
     try {
@@ -295,7 +295,7 @@ app.get('/api/payments', authMiddleware, async (req, res) => {
     }
 });
 
-// ADMIN: все платежи
+
 app.get('/api/admin/payments', authMiddleware, adminOnly, async (req, res) => {
     try {
         const result = await pool.query(`
